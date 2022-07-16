@@ -14,9 +14,9 @@
 </head>
 <body>
 
-<a-scene
+<a-scene id="scene"
   renderer="colorManagement: true;"
-  model-viewer="gltfModel: #floater"
+  model-viewer="gltfModel: #portal"
   >
   <a-assets>
 
@@ -27,10 +27,6 @@
     <a-asset-item id="portal"
     src="assets\gltf\portal.gltf"
     response-type="arraybuffer" crossorigin="anonymous"></a-asset-item>
-
-    <a-asset-item id="reticle"
-      src="https://cdn.aframe.io/examples/ar/models/reticle/reticle.gltf"
-      response-type="arraybuffer" crossorigin="anonymous"></a-asset-item>
   </a-assets>
 </a-scene>
 </body>
