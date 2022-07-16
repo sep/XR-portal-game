@@ -363,14 +363,18 @@ AFRAME.registerComponent('model-viewer', {
   
     centerAndScaleModel: function () {
       var box;
+      var box2;
       var size;
+      var size2;
       var center;
       var scale;
+      var scale2;
       var modelEl = this.modelEl;
       var modelEl2 = this.modelEl2;
       var shadowEl = this.shadowEl;
       var titleEl = this.titleEl;
       var gltfObject = modelEl.getObject3D('mesh');
+      var gltfObject2 = modelEl2.getObject3D('mesh');
   
       // Reset position and scales.
       modelEl.object3D.position.set(0, 0, 0);
@@ -383,22 +387,31 @@ AFRAME.registerComponent('model-viewer', {
       modelEl.object3D.updateMatrixWorld();
       modelEl2.object3D.updateMatrixWorld();
       box = new THREE.Box3().setFromObject(gltfObject);
+      box2 = new THREE.Box3().setFromObject(gltfObject2);
       size = box.getSize(new THREE.Vector3());
+      size2 = box2.getSize(new THREE.Vector3());
   
       // Calculate scale factor to resize model to human scale.
       scale = 1.6 / size.y;
       scale = 2.0 / size.x < scale ? 2.0 / size.x : scale;
-      scale = 2.0 / size.z < scale ? 2.0 / size.z : scale;
+      scale = 2.0 / size.z < scale ? 2.0 / size.z : scale;      
+      
+      scale2 = 1.6 / size2.y;
+      scale2 = 2.0 / size2.x < scale2 ? 2.0 / size2.x : scale2;
+      scale2 = 2.0 / size2.z < scale2 ? 2.0 / size2.z : scale2;
   
       modelEl.object3D.scale.set(scale, scale, scale);
-      modelEl2.object3D.scale.set(scale, scale, scale);
+      modelEl2.object3D.scale.set(scale2, scale2, scale2);
   
       // Center model at (0, 0, 0).
       modelEl.object3D.updateMatrixWorld();
       modelEl2.object3D.updateMatrixWorld();
-      box = new THREE.Box3().setFromObject(gltfObject);
+      box = new THREE.Box3().setFromObject(gltfObject);      
+      box2 = new THREE.Box3().setFromObject(gltfObject2);
       center = box.getCenter(new THREE.Vector3());
       size = box.getSize(new THREE.Vector3());
+      center2 = box2.getCenter(new THREE.Vector3());
+      size2 = box2.getSize(new THREE.Vector3());
   
       shadowEl.object3D.scale.y = size.x;
       shadowEl.object3D.scale.x = size.y;
