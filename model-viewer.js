@@ -83,8 +83,19 @@ AFRAME.registerComponent('model-viewer', {
       cameraRigEl.appendChild(leftHandEl);
   
       this.el.appendChild(cameraRigEl);
+      this.spawnFloater();
+      this.spawnFloater();
+      this.spawnFloater();
     },
-  
+    spawnFloater: function() {
+      var floaterEl = document.createElement('a-entity');
+      floaterEl.setAttribute('response-type', "arraybuffer");
+      floaterEl.setAttribute('src', '/assets/gltf/floater.gltf');
+      floaterEl.setAttribute('gltf-model', '/assets/gltf/floater.gltf');
+      floaterEl.setAttribute('position', (Math.random() * 5).toFixed() + ' '
+      + (Math.random() * 5).toFixed() + ' ' + (Math.random() * 5).toFixed());
+      this.el.append(floaterEl)
+    },
     initBackground: function () {
       var backgroundEl = this.backgroundEl = document.querySelector('a-entity');
       backgroundEl.setAttribute('geometry', {primitive: 'sphere', radius: 65});
@@ -236,7 +247,6 @@ AFRAME.registerComponent('model-viewer', {
       this.cameraRigPosition = cameraRigEl.object3D.position.clone();
       this.cameraRigRotation = cameraRigEl.object3D.rotation.clone();
   
-      debugger;
       if (!this.el.sceneEl.is('ar-mode')) {
         cameraRigEl.object3D.position.set(0, 0, 2);
       } else {
@@ -407,6 +417,6 @@ AFRAME.registerComponent('model-viewer', {
       if (evt.buttons) { this.leftRightButtonPressed = evt.buttons === 3; }
       this.oldClientX = evt.clientX;
       this.oldClientY = evt.clientY;
-    }
+    },
   });
   
