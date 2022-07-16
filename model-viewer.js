@@ -9,37 +9,37 @@ AFRAME.registerComponent('model-viewer', {
       const portalSpawnPoint = {x: 0, y: 1, z: -5}
       const portalWidth = 2
       const portalHeight = 3
-  
+
       el.setAttribute('renderer', {colorManagement: true});
       el.setAttribute('cursor', {rayOrigin: 'mouse', fuse: false});
       el.setAttribute('webxr', {optionalFeatures: 'hit-test, local-floor'});
       el.setAttribute('raycaster', {objects: '.raycastable'});
-  
+
       this.onModelLoaded = this.onModelLoaded.bind(this);
-  
+
       this.onMouseUp = this.onMouseUp.bind(this);
       this.onMouseMove = this.onMouseMove.bind(this);
       this.onMouseDown = this.onMouseDown.bind(this);
-  
+
       this.onTouchMove = this.onTouchMove.bind(this);
       this.onTouchEnd = this.onTouchEnd.bind(this);
 
       this.onOrientationChange = this.onOrientationChange.bind(this);
-  
+
       this.initCameraRig();
       this.initEntities();
       this.initBackground();
-  
+
       // Disable context menu on canvas when pressing mouse right button;
       this.el.sceneEl.canvas.oncontextmenu = function (evt) { evt.preventDefault(); };
-  
+
       window.addEventListener('orientationchange', this.onOrientationChange);
-  
+
       // Mouse 2D controls.
       document.addEventListener('mouseup', this.onMouseUp);
       document.addEventListener('mousemove', this.onMouseMove);
       document.addEventListener('mousedown', this.onMouseDown);
-  
+
       // Mobile 2D controls.
       document.addEventListener('touchend', this.onTouchEnd);
       document.addEventListener('touchmove', this.onTouchMove);
@@ -77,18 +77,18 @@ AFRAME.registerComponent('model-viewer', {
       var cameraEl = this.cameraEl = document.createElement('a-entity');
       var rightHandEl = this.rightHandEl = document.createElement('a-entity');
       var leftHandEl = this.leftHandEl = document.createElement('a-entity');
-  
+
       cameraEl.setAttribute('camera', {fov: 60});
       cameraEl.setAttribute('look-controls', {
         magicWindowTrackingEnabled: false,
         mouseEnabled: false,
         touchEnabled: false
       });
-  
+
       cameraRigEl.appendChild(cameraEl);
       cameraRigEl.appendChild(rightHandEl);
       cameraRigEl.appendChild(leftHandEl);
-  
+
       this.el.appendChild(cameraRigEl);
     },
     initBackground: function () {
@@ -112,75 +112,57 @@ AFRAME.registerComponent('model-viewer', {
       // We will center the model and rotate a pivot.
       var modelPivotEl = this.modelPivotEl = document.createElement('a-entity');
       // This is our glTF model entity.
-      //var modelEl = this.modelEl = document.createElement('a-entity');
-      // Shadow blurb for 2D and VR modes. Scaled to match the size of the model.
-      var shadowEl = this.shadowEl = document.createElement('a-entity');
+
       // Real time shadow only used in AR mode.
       var arShadowEl = this.arShadowEl = document.createElement('a-entity');
-      // The title / legend displayed above the model.
-      var titleEl = this.titleEl = document.createElement('a-entity');
       // Reticle model used to position the model in AR mode.
       var reticleEl = this.reticleEl = document.createElement('a-entity');
       // Scene ligthing.
       var lightEl = this.lightEl = document.createElement('a-entity');
       var sceneLightEl = this.sceneLightEl = document.createElement('a-entity');
-  
+
       sceneLightEl.setAttribute('light', {
         type: 'hemisphere',
         intensity: 1
       });
-  
+
       modelPivotEl.id = 'modelPivot';
-  
+
       this.el.appendChild(sceneLightEl);
-  
+
       reticleEl.setAttribute('gltf-model', '#reticle');
       reticleEl.setAttribute('scale', '0.8 0.8 0.8');
       reticleEl.setAttribute('ar-hit-test', {targetEl: '#modelPivot'});
       reticleEl.setAttribute('visible', 'false');
-  
+
       //modelEl.id = 'model';
-  
+
       laserHitPanelEl.id = 'laserHitPanel';
       laserHitPanelEl.setAttribute('position', '0 0 -10');
       laserHitPanelEl.setAttribute('geometry', 'primitive: plane; width: 30; height: 20');
       laserHitPanelEl.setAttribute('material', 'color: red');
       laserHitPanelEl.setAttribute('visible', 'false');
       laserHitPanelEl.classList.add('raycastable');
-  
+
       this.containerEl.appendChild(laserHitPanelEl);
-  
+
       //modelEl.setAttribute('rotation', '0 0 0');
       //modelEl.setAttribute('animation-mixer', { timeScale: 1, clip: "Flying", repetitions: 1, loop: "once", crossFadeDuration: 0.2});
       // this.modelEl.addEventListener("action-loop", function (action, loopDelta) {
       //   console.log("Animation finished")
       // });
       //modelEl.setAttribute('shadow', 'cast: true; receive: false');
-  
+
      // modelPivotEl.appendChild(modelEl);
-  
-      shadowEl.setAttribute('rotation', '-90 0 0');
-      shadowEl.setAttribute('geometry', 'primitive: plane; width: 1.0; height: 1.0');
-      shadowEl.setAttribute('material', 'src: #shadow; transparent: true; opacity: 0.40');
-      shadowEl.setAttribute('hide-on-enter-ar', '');
-  
-      modelPivotEl.appendChild(shadowEl);
-  
+
       arShadowEl.setAttribute('rotation', '-90 0 0');
       arShadowEl.setAttribute('geometry', 'primitive: plane; width: 30.0; height: 30.0');
       arShadowEl.setAttribute('shadow', 'recieve: true');
       arShadowEl.setAttribute('ar-shadows', 'opacity: 0.2');
       arShadowEl.setAttribute('visible', 'false');
-  
+
       modelPivotEl.appendChild(arShadowEl);
-  
-      titleEl.id = 'title';
-      titleEl.setAttribute('text', 'value: ' + this.data.title + '; width: 6');
-      titleEl.setAttribute('hide-on-enter-ar', '');
-      titleEl.setAttribute('visible', 'false');
-  
-      this.containerEl.appendChild(titleEl);
-  
+
       lightEl.id = 'light';
       lightEl.setAttribute('position', '-2 4 2');
       lightEl.setAttribute('light', {
@@ -195,14 +177,14 @@ AFRAME.registerComponent('model-viewer', {
         intensity: 0.5,
         target: 'modelPivot'
       });
-  
+
       this.containerEl.appendChild(lightEl);
       this.containerEl.appendChild(modelPivotEl);
-  
+
       this.el.appendChild(containerEl);
       this.el.appendChild(reticleEl);
     },
-  
+
     onOrientationChange: function () {
       if (AFRAME.utils.device.isLandscape()) {
         this.cameraRigEl.object3D.position.z -= 1;
@@ -210,7 +192,7 @@ AFRAME.registerComponent('model-viewer', {
         this.cameraRigEl.object3D.position.z += 1;
       }
     },
-  
+
     tick: function () {
       var modelPivotEl = this.modelPivotEl;
       var intersection;
@@ -228,10 +210,10 @@ AFRAME.registerComponent('model-viewer', {
       intersectionPosition = intersection.point;
       this.oldHandX = this.oldHandX || intersectionPosition.x;
       this.oldHandY = this.oldHandY || intersectionPosition.y;
-  
+
       modelPivotEl.object3D.rotation.y -= (this.oldHandX - intersectionPosition.x) / 4;
       modelPivotEl.object3D.rotation.x += (this.oldHandY - intersectionPosition.y) / 4;
-  
+
       this.oldHandX = intersectionPosition.x;
       this.oldHandY = intersectionPosition.y;
     },
@@ -240,27 +222,27 @@ AFRAME.registerComponent('model-viewer', {
       if (evt.touches.length === 1) { this.onSingleTouchMove(evt); }
       if (evt.touches.length === 2) { this.onPinchMove(evt); }
     },
-  
+
     onSingleTouchMove: function (evt) {
       var dX;
       var dY;
       var modelPivotEl = this.modelPivotEl;
       this.oldClientX = this.oldClientX || evt.touches[0].clientX;
       this.oldClientY = this.oldClientY || evt.touches[0].clientY;
-  
+
       dX = this.oldClientX - evt.touches[0].clientX;
       dY = this.oldClientY - evt.touches[0].clientY;
-  
+
       modelPivotEl.object3D.rotation.y -= dX / 200;
       this.oldClientX = evt.touches[0].clientX;
-  
+
       modelPivotEl.object3D.rotation.x -= dY / 100;
-  
+
       // Clamp x rotation to [-90,90]
       modelPivotEl.object3D.rotation.x = Math.min(Math.max(-Math.PI / 2, modelPivotEl.object3D.rotation.x), Math.PI / 2);
       this.oldClientY = evt.touches[0].clientY;
     },
-  
+
     onPinchMove: function (evt) {
       var dX = evt.touches[0].clientX - evt.touches[1].clientX;
       var dY = evt.touches[0].clientY - evt.touches[1].clientY;
@@ -269,29 +251,29 @@ AFRAME.registerComponent('model-viewer', {
       var oldDistance = this.oldDistance || distance;
       var distanceDifference = oldDistance - distance;
       var modelScale = this.modelScale || modelPivotEl.object3D.scale.x;
-  
+
       modelScale -= distanceDifference / 500;
       modelScale = Math.min(Math.max(0.8, modelScale), 2.0);
       // Clamp scale.
       modelPivotEl.object3D.scale.set(modelScale, modelScale, modelScale);
-  
+
       this.modelScale = modelScale;
       this.oldDistance = distance;
     },
-  
+
     onTouchEnd: function (evt) {
       this.oldClientX = undefined;
       this.oldClientY = undefined;
       if (evt.touches.length < 2) { this.oldDistance = undefined; }
     },
-  
+
     onMouseUp: function (evt) {
       this.leftRightButtonPressed = false;
       if (evt.buttons === undefined || evt.buttons !== 0) { return; }
       this.oldClientX = undefined;
       this.oldClientY = undefined;
     },
-  
+
     onMouseMove: function (evt) {
       if (this.leftRightButtonPressed) {
         this.dragModel(evt);
@@ -299,7 +281,7 @@ AFRAME.registerComponent('model-viewer', {
         this.rotateModel(evt);
       }
     },
-  
+
     dragModel: function (evt) {
       var dX;
       var dY;
@@ -312,7 +294,7 @@ AFRAME.registerComponent('model-viewer', {
       this.oldClientX = evt.clientX;
       this.oldClientY = evt.clientY;
     },
-  
+
     rotateModel: function (evt) {
       var dX;
       var dY;
@@ -322,18 +304,18 @@ AFRAME.registerComponent('model-viewer', {
       dY = this.oldClientY - evt.clientY;
       modelPivotEl.object3D.rotation.y -= dX / 100;
       modelPivotEl.object3D.rotation.x -= dY / 200;
-  
+
       // Clamp x rotation to [-90,90]
       modelPivotEl.object3D.rotation.x = Math.min(Math.max(-Math.PI / 2, modelPivotEl.object3D.rotation.x), Math.PI / 2);
-  
+
       this.oldClientX = evt.clientX;
       this.oldClientY = evt.clientY;
     },
-  
+
     onModelLoaded: function () {
       this.centerAndScaleModel();
     },
-  
+
     centerAndScaleModel: function () {
       var box;
       var size;
@@ -341,51 +323,35 @@ AFRAME.registerComponent('model-viewer', {
       var scale;
       //var modelEl = this.modelEl;
       var shadowEl = this.shadowEl;
-      var titleEl = this.titleEl;
       var gltfObject = modelEl.getObject3D('mesh');
-  
+
       // Reset position and scales.
       //modelEl.object3D.position.set(0, 0, 0);
       //modelEl.object3D.scale.set(1.0, 1.0, 1.0);
       this.cameraRigEl.object3D.position.z = 3.0;
-  
+
       // Calculate model size.
       //modelEl.object3D.updateMatrixWorld();
       box = new THREE.Box3().setFromObject(gltfObject);
       size = box.getSize(new THREE.Vector3());
-  
+
       // Calculate scale factor to resize model to human scale.
       scale = 1.6 / size.y;
       scale = 2.0 / size.x < scale ? 2.0 / size.x : scale;
       scale = 2.0 / size.z < scale ? 2.0 / size.z : scale;
-  
+
       //modelEl.object3D.scale.set(scale, scale, scale);
-  
+
       // Center model at (0, 0, 0).
       //modelEl.object3D.updateMatrixWorld();
       box = new THREE.Box3().setFromObject(gltfObject);
       center = box.getCenter(new THREE.Vector3());
       size = box.getSize(new THREE.Vector3());
-  
-      shadowEl.object3D.scale.y = size.x;
-      shadowEl.object3D.scale.x = size.y;
-      shadowEl.object3D.position.y = -size.y / 2;
-      shadowEl.object3D.position.z = -center.z;
-      shadowEl.object3D.position.x = -center.x;
-  
-      titleEl.object3D.position.x = 2.2 - center.x;
-      titleEl.object3D.position.y = size.y + 0.5;
-      titleEl.object3D.position.z = -2;
-      titleEl.object3D.visible = true;
-  
-      //modelEl.object3D.position.x = -center.x;
-      //modelEl.object3D.position.y = -center.y;
-      //modelEl.object3D.position.z = -center.z;
-  
+
       // When in mobile landscape we want to bring the model a bit closer.
       if (AFRAME.utils.device.isLandscape()) { this.cameraRigEl.object3D.position.z -= 1; }
     },
-  
+
     onMouseDown: function (evt) {
       if (evt.buttons) { this.leftRightButtonPressed = evt.buttons === 3; }
       this.oldClientX = evt.clientX;
@@ -397,4 +363,3 @@ AFRAME.registerComponent('model-viewer', {
       return Math.random() * rangeFrom0 * plusOrMinus;
     }
   });
-  
