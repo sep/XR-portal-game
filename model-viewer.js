@@ -6,6 +6,7 @@ AFRAME.registerComponent('model-viewer', {
     },
     init: function () {
       var el = this.el;
+      const portalSpawnPoint = {x: 0, y: 0, z: 2}
   
       el.setAttribute('renderer', {colorManagement: true});
       el.setAttribute('cursor', {rayOrigin: 'mouse', fuse: false});
@@ -90,11 +91,15 @@ AFRAME.registerComponent('model-viewer', {
     spawnFloater: function() {
       var floaterEl = document.createElement('a-entity');
       floaterEl.setAttribute('response-type', "arraybuffer");
-      floaterEl.setAttribute('src', '/assets/gltf/floater.gltf');
-      floaterEl.setAttribute('gltf-model', '/assets/gltf/floater.gltf');
-      floaterEl.setAttribute('position', (Math.random() * 5).toFixed() + ' '
-      + (Math.random() * 5).toFixed() + ' ' + (Math.random() * 5).toFixed());
+      floaterEl.setAttribute('gltf-model', '/assets/gltf/floater_bug.gltf');
+      floaterEl.setAttribute('position', (Math.random() * 2).toFixed() + ' '
+      + (Math.random() * 2).toFixed() + ' ' + (Math.random() * -2).toFixed());
+      floaterEl.setAttribute('scale', '0.05 0.05 0.05');
+      floaterEl.setAttribute('animation-mixer', { timeScale: 1, clip: "Flying", repetitions: 1, loop: "once", crossFadeDuration: 0.2});
       this.el.append(floaterEl)
+    },
+    spawnPortal: function() {
+
     },
     initBackground: function () {
       var backgroundEl = this.backgroundEl = document.querySelector('a-entity');
