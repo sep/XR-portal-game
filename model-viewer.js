@@ -100,7 +100,7 @@ AFRAME.registerComponent('model-viewer', {
       });
       backgroundEl.setAttribute('hide-on-enter-ar', '');
     },
-  
+
     initEntities: function () {
       // Container for our entities to keep the scene clean and tidy.
       var containerEl = this.containerEl = document.createElement('a-entity');
@@ -151,8 +151,11 @@ AFRAME.registerComponent('model-viewer', {
   
       this.containerEl.appendChild(laserHitPanelEl);
   
-      modelEl.setAttribute('rotation', '0 90 90');
-      modelEl.setAttribute('animation-mixer', '');
+      modelEl.setAttribute('rotation', '0 0 0');      
+      modelEl.setAttribute('animation-mixer', { timeScale: 1, clip: "Flying", repetitions: 1, loop: "once", crossFadeDuration: 0.2});
+      // this.modelEl.addEventListener("action-loop", function (action, loopDelta) {
+      //   console.log("Animation finished")
+      // });
       modelEl.setAttribute('shadow', 'cast: true; receive: false');
   
       modelPivotEl.appendChild(modelEl);
