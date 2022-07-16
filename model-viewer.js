@@ -107,8 +107,6 @@ AFRAME.registerComponent('model-viewer', {
       var modelPivotEl = this.modelPivotEl = document.createElement('a-entity');
       // This is our glTF model entity.
       var modelEl = this.modelEl = document.createElement('a-entity');
-      // Shadow blurb for 2D and VR modes. Scaled to match the size of the model.
-      var shadowEl = this.shadowEl = document.createElement('a-entity');
       // Real time shadow only used in AR mode.
       var arShadowEl = this.arShadowEl = document.createElement('a-entity');
       // Reticle model used to position the model in AR mode.
@@ -147,13 +145,6 @@ AFRAME.registerComponent('model-viewer', {
       modelEl.setAttribute('shadow', 'cast: true; receive: false');
   
       modelPivotEl.appendChild(modelEl);
-  
-      shadowEl.setAttribute('rotation', '-90 0 0');
-      shadowEl.setAttribute('geometry', 'primitive: plane; width: 1.0; height: 1.0');
-      shadowEl.setAttribute('material', 'src: #shadow; transparent: true; opacity: 0.40');
-      shadowEl.setAttribute('hide-on-enter-ar', '');
-  
-      modelPivotEl.appendChild(shadowEl);
   
       arShadowEl.setAttribute('rotation', '-90 0 0');
       arShadowEl.setAttribute('geometry', 'primitive: plane; width: 30.0; height: 30.0');
@@ -370,12 +361,6 @@ AFRAME.registerComponent('model-viewer', {
       box = new THREE.Box3().setFromObject(gltfObject);
       center = box.getCenter(new THREE.Vector3());
       size = box.getSize(new THREE.Vector3());
-  
-      shadowEl.object3D.scale.y = size.x;
-      shadowEl.object3D.scale.x = size.y;
-      shadowEl.object3D.position.y = -size.y / 2;
-      shadowEl.object3D.position.z = -center.z;
-      shadowEl.object3D.position.x = -center.x;
   
       modelEl.object3D.position.x = -center.x;
       modelEl.object3D.position.y = -center.y;
