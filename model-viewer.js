@@ -6,6 +6,7 @@ AFRAME.registerComponent('model-viewer', {
     },
     init: function () {
       var el = this.el;
+      var floaters = this.floaters = [];
       const portalSpawnPoint = {x: 0, y: 1, z: -5}
       const portalWidth = 2
       const portalHeight = 3
@@ -47,9 +48,12 @@ AFRAME.registerComponent('model-viewer', {
       //this.modelEl.addEventListener('model-loaded', this.onModelLoaded);
       this.spawnPortal(this.el, portalSpawnPoint);
       this.floater = this.spawnFloater(this.el, portalSpawnPoint);
+      this.floaters.push(this.floater);
+      console.log(floaters);
       this.spawnFloater(this.el, portalSpawnPoint);
       this.spawnFloater(this.el, portalSpawnPoint);
     },
+
     spawnFloater: function(parent, portalSpawnPoint)  {
       const floaterEl = document.createElement('a-entity');
       floaterEl.setAttribute('response-type', "arraybuffer");
@@ -63,6 +67,14 @@ AFRAME.registerComponent('model-viewer', {
       parent.append(floaterEl)
       return floater;
     },
+
+    moveFloaters: function(parent, floaters) {
+      for (var i = 0; i < this.floaters.length; i++)
+      {
+        this.floaters[i].distance -= 1;
+      }
+    },
+
     spawnPortal: function(parent, portalSpawnPoint) {
       const portalEl = document.createElement('a-entity');
       portalEl.setAttribute('response-type', "arraybuffer");
@@ -191,6 +203,9 @@ AFRAME.registerComponent('model-viewer', {
       var intersectionPosition;
       var laserHitPanelEl = this.laserHitPanelEl;
       var activeHandEl = this.activeHandEl;
+
+      this.moveFloaters(parent, this.floaters);
+      
       if (!this.el.sceneEl.is('vr-mode')) { return; }
       if (!activeHandEl) { return; }
       intersection = activeHandEl.components.raycaster.getIntersection(laserHitPanelEl);
