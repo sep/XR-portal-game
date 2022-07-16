@@ -232,13 +232,13 @@ AFRAME.registerComponent('model-viewer', {
   
       this.containerEl.appendChild(laserHitPanelEl);
   
-      modelEl.setAttribute('rotation', '0 -30 0');
+      modelEl.setAttribute('rotation', '0 90 90');
       modelEl.setAttribute('animation-mixer', '');
       modelEl.setAttribute('shadow', 'cast: true; receive: false');
   
       modelPivotEl.appendChild(modelEl);
   
-      shadowEl.setAttribute('rotation', '-90 -30 0');
+      shadowEl.setAttribute('rotation', '-90 0 0');
       shadowEl.setAttribute('geometry', 'primitive: plane; width: 1.0; height: 1.0');
       shadowEl.setAttribute('material', 'src: #shadow; transparent: true; opacity: 0.40');
       shadowEl.setAttribute('hide-on-enter-ar', '');
