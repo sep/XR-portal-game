@@ -72,6 +72,7 @@ AFRAME.registerComponent('model-viewer', {
     },
 
     moveFloaters: function() {
+      if (!this.el.sceneEl.is('ar-mode')) { return; }
       for (var i = 0; i < this.floaters.length; i++)
       {
         this.approachPlayer(this.floaters[i])
@@ -207,6 +208,8 @@ AFRAME.registerComponent('model-viewer', {
       var laserHitPanelEl = this.laserHitPanelEl;
       var activeHandEl = this.activeHandEl;
       
+
+      
       if (!this.el.sceneEl.is('vr-mode')) { return; }
       if (!activeHandEl) { return; }
       intersection = activeHandEl.components.raycaster.getIntersection(laserHitPanelEl);
@@ -339,6 +342,9 @@ AFRAME.registerComponent('model-viewer', {
       var distanceFromTarget = enemyModel.object3D.position.distanceTo(worldPos);
       if (distanceFromTarget > 0.001) {
         enemyModel.object3D.translateOnAxis(targetDirection, 0.0002);
+      }
+      if (distanceFromTarget < 0.5){
+        window.location.reload();
       }
     },
   });
