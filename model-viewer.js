@@ -17,18 +17,12 @@ AFRAME.registerComponent('model-viewer', {
       this.onMouseUp = this.onMouseUp.bind(this);
       this.onMouseMove = this.onMouseMove.bind(this);
       this.onMouseDown = this.onMouseDown.bind(this);
-      this.onMouseWheel = this.onMouseWheel.bind(this);
   
       this.onTouchMove = this.onTouchMove.bind(this);
       this.onTouchEnd = this.onTouchEnd.bind(this);
   
-      this.onThumbstickMoved = this.onThumbstickMoved.bind(this);
-  
       this.onEnterVR = this.onEnterVR.bind(this);
       this.onExitVR = this.onExitVR.bind(this);
-  
-      this.onMouseDownLaserHitPanel = this.onMouseDownLaserHitPanel.bind(this);
-      this.onMouseUpLaserHitPanel = this.onMouseUpLaserHitPanel.bind(this);
   
       this.onOrientationChange = this.onOrientationChange.bind(this);
   
@@ -41,18 +35,10 @@ AFRAME.registerComponent('model-viewer', {
   
       window.addEventListener('orientationchange', this.onOrientationChange);
   
-      // VR controls.
-      this.laserHitPanelEl.addEventListener('mousedown', this.onMouseDownLaserHitPanel);
-      this.laserHitPanelEl.addEventListener('mouseup', this.onMouseUpLaserHitPanel);
-  
-      this.leftHandEl.addEventListener('thumbstickmoved', this.onThumbstickMoved);
-      this.rightHandEl.addEventListener('thumbstickmoved', this.onThumbstickMoved);
-  
       // Mouse 2D controls.
       document.addEventListener('mouseup', this.onMouseUp);
       document.addEventListener('mousemove', this.onMouseMove);
       document.addEventListener('mousedown', this.onMouseDown);
-      document.addEventListener('wheel', this.onMouseWheel);
   
       // Mobile 2D controls.
       document.addEventListener('touchend', this.onTouchEnd);
@@ -206,43 +192,6 @@ AFRAME.registerComponent('model-viewer', {
   
       this.el.appendChild(containerEl);
       this.el.appendChild(reticleEl);
-    },
-  
-    onThumbstickMoved: function (evt) {
-      var modelPivotEl = this.modelPivotEl;
-      var modelScale = this.modelScale || modelPivotEl.object3D.scale.x;
-      modelScale -= evt.detail.y / 20;
-      modelScale = Math.min(Math.max(0.8, modelScale), 2.0);
-      modelPivotEl.object3D.scale.set(modelScale, modelScale, modelScale);
-      this.modelScale = modelScale;
-    },
-  
-    onMouseWheel: function (evt) {
-      var modelPivotEl = this.modelPivotEl;
-      var modelScale = this.modelScale || modelPivotEl.object3D.scale.x;
-      modelScale -= evt.deltaY / 100;
-      modelScale = Math.min(Math.max(0.8, modelScale), 2.0);
-      // Clamp scale.
-      modelPivotEl.object3D.scale.set(modelScale, modelScale, modelScale);
-      this.modelScale = modelScale;
-    },
-  
-    onMouseDownLaserHitPanel: function (evt) {
-      var cursorEl = evt.detail.cursorEl;
-      var intersection = cursorEl.components.raycaster.getIntersection(this.laserHitPanelEl);
-      if (!intersection) { return; }
-      cursorEl.setAttribute('raycaster', 'lineColor', 'white');
-      this.activeHandEl = cursorEl;
-      this.oldHandX = undefined;
-      this.oldHandY = undefined;
-    },
-  
-    onMouseUpLaserHitPanel: function (evt) {
-      var cursorEl = evt.detail.cursorEl;
-      if (cursorEl === this.leftHandEl) { this.leftHandPressed = false; }
-      if (cursorEl === this.rightHandEl) { this.rightHandPressed = false; }
-      cursorEl.setAttribute('raycaster', 'lineColor', 'white');
-      if (this.activeHandEl === cursorEl) { this.activeHandEl = undefined; }
     },
   
     onOrientationChange: function () {
