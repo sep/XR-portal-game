@@ -6,7 +6,9 @@ AFRAME.registerComponent('model-viewer', {
     },
     init: function () {
       var el = this.el;
-      const portalSpawnPoint = {x: 0, y: 0, z: 2}
+      const portalSpawnPoint = {x: 0, y: 1, z: -5}
+      const portalWidth = 2
+      const portalHeight = 3
   
       el.setAttribute('renderer', {colorManagement: true});
       el.setAttribute('cursor', {rayOrigin: 'mouse', fuse: false});
@@ -21,10 +23,7 @@ AFRAME.registerComponent('model-viewer', {
   
       this.onTouchMove = this.onTouchMove.bind(this);
       this.onTouchEnd = this.onTouchEnd.bind(this);
-  
-      this.onEnterVR = this.onEnterVR.bind(this);
-      this.onExitVR = this.onExitVR.bind(this);
-  
+
       this.onOrientationChange = this.onOrientationChange.bind(this);
   
       this.initCameraRig();
@@ -44,18 +43,35 @@ AFRAME.registerComponent('model-viewer', {
       // Mobile 2D controls.
       document.addEventListener('touchend', this.onTouchEnd);
       document.addEventListener('touchmove', this.onTouchMove);
-  
-      this.el.sceneEl.addEventListener('enter-vr', this.onEnterVR);
-      this.el.sceneEl.addEventListener('exit-vr', this.onExitVR);
-  
-      this.modelEl.addEventListener('model-loaded', this.onModelLoaded);
+
+      //this.modelEl.addEventListener('model-loaded', this.onModelLoaded);
+      this.spawnPortal(this.el, portalSpawnPoint);
+      this.floater = this.spawnFloater(this.el, portalSpawnPoint);
+      this.spawnFloater(this.el, portalSpawnPoint);
+      this.spawnFloater(this.el, portalSpawnPoint);
     },
-  
-    update: function () {
-      if (!this.data.gltfModel) { return; }
-      this.modelEl.setAttribute('gltf-model', this.data.gltfModel);
+    spawnFloater: function(parent, portalSpawnPoint)  {
+      const floaterEl = document.createElement('a-entity');
+      floaterEl.setAttribute('response-type', "arraybuffer");
+      floaterEl.setAttribute('gltf-model', '/assets/gltf/floater_bug.gltf');
+      const x = this.randomFrom0(.5) + portalSpawnPoint.x
+      const y = this.randomFrom0(.5) + portalSpawnPoint.y
+      const z = portalSpawnPoint.z
+      floaterEl.setAttribute('position', AFRAME.utils.coordinates.stringify({x:x, y:y, z:z}));
+      floaterEl.setAttribute('scale', '0.05 0.05 0.05');
+      floaterEl.setAttribute('animation-mixer', { timeScale: 1, clip: "Flying", repetitions: 1, loop: "once", crossFadeDuration: 0.2});
+      parent.append(floaterEl)
+      return floater;
     },
-  
+    spawnPortal: function(parent, portalSpawnPoint) {
+      const portalEl = document.createElement('a-entity');
+      portalEl.setAttribute('response-type', "arraybuffer");
+      portalEl.setAttribute('gltf-model', '/assets/gltf/portal.gltf');
+      portalEl.setAttribute('position', AFRAME.utils.coordinates.stringify(portalSpawnPoint));
+      portalEl.setAttribute('scale', '0.8 0.8 0.8');
+      portalEl.setAttribute('rotation', '0 90 90');
+      parent.append(portalEl)
+    },
     initCameraRig: function () {
       var cameraRigEl = this.cameraRigEl = document.createElement('a-entity');
       var cameraEl = this.cameraEl = document.createElement('a-entity');
@@ -69,40 +85,14 @@ AFRAME.registerComponent('model-viewer', {
         touchEnabled: false
       });
   
-      rightHandEl.setAttribute('rotation', '0 90 0');
-      rightHandEl.setAttribute('laser-controls', {hand: 'right'});
-      rightHandEl.setAttribute('raycaster', {objects: '.raycastable'});
-      rightHandEl.setAttribute('line', {color: '#118A7E'});
-  
-      leftHandEl.setAttribute('rotation', '0 90 0');
-      leftHandEl.setAttribute('laser-controls', {hand: 'right'});
-      leftHandEl.setAttribute('raycaster', {objects: '.raycastable'});
-      leftHandEl.setAttribute('line', {color: '#118A7E'});
-  
       cameraRigEl.appendChild(cameraEl);
       cameraRigEl.appendChild(rightHandEl);
       cameraRigEl.appendChild(leftHandEl);
   
       this.el.appendChild(cameraRigEl);
-      this.spawnFloater();
-      this.spawnFloater();
-      this.spawnFloater();
-    },
-    spawnFloater: function() {
-      var floaterEl = document.createElement('a-entity');
-      floaterEl.setAttribute('response-type', "arraybuffer");
-      floaterEl.setAttribute('gltf-model', '/assets/gltf/floater_bug.gltf');
-      floaterEl.setAttribute('position', (Math.random() * 2).toFixed() + ' '
-      + (Math.random() * 2).toFixed() + ' ' + (Math.random() * -2).toFixed());
-      floaterEl.setAttribute('scale', '0.05 0.05 0.05');
-      floaterEl.setAttribute('animation-mixer', { timeScale: 1, clip: "Flying", repetitions: 1, loop: "once", crossFadeDuration: 0.2});
-      this.el.append(floaterEl)
-    },
-    spawnPortal: function() {
-
     },
     initBackground: function () {
-      var backgroundEl = this.backgroundEl = document.querySelector('a-entity');
+      const backgroundEl = this.backgroundEl = document.querySelector('a-entity');
       backgroundEl.setAttribute('geometry', {primitive: 'sphere', radius: 65});
       backgroundEl.setAttribute('material', {
         shader: 'background-gradient',
@@ -122,7 +112,7 @@ AFRAME.registerComponent('model-viewer', {
       // We will center the model and rotate a pivot.
       var modelPivotEl = this.modelPivotEl = document.createElement('a-entity');
       // This is our glTF model entity.
-      var modelEl = this.modelEl = document.createElement('a-entity');
+      //var modelEl = this.modelEl = document.createElement('a-entity');
       // Shadow blurb for 2D and VR modes. Scaled to match the size of the model.
       var shadowEl = this.shadowEl = document.createElement('a-entity');
       // Real time shadow only used in AR mode.
@@ -149,7 +139,7 @@ AFRAME.registerComponent('model-viewer', {
       reticleEl.setAttribute('ar-hit-test', {targetEl: '#modelPivot'});
       reticleEl.setAttribute('visible', 'false');
   
-      modelEl.id = 'model';
+      //modelEl.id = 'model';
   
       laserHitPanelEl.id = 'laserHitPanel';
       laserHitPanelEl.setAttribute('position', '0 0 -10');
@@ -160,14 +150,14 @@ AFRAME.registerComponent('model-viewer', {
   
       this.containerEl.appendChild(laserHitPanelEl);
   
-      modelEl.setAttribute('rotation', '0 0 0');      
-      modelEl.setAttribute('animation-mixer', { timeScale: 1, clip: "Flying", repetitions: 1, loop: "once", crossFadeDuration: 0.2});
+      //modelEl.setAttribute('rotation', '0 0 0');
+      //modelEl.setAttribute('animation-mixer', { timeScale: 1, clip: "Flying", repetitions: 1, loop: "once", crossFadeDuration: 0.2});
       // this.modelEl.addEventListener("action-loop", function (action, loopDelta) {
       //   console.log("Animation finished")
       // });
-      modelEl.setAttribute('shadow', 'cast: true; receive: false');
+      //modelEl.setAttribute('shadow', 'cast: true; receive: false');
   
-      modelPivotEl.appendChild(modelEl);
+     // modelPivotEl.appendChild(modelEl);
   
       shadowEl.setAttribute('rotation', '-90 0 0');
       shadowEl.setAttribute('geometry', 'primitive: plane; width: 1.0; height: 1.0');
@@ -245,29 +235,7 @@ AFRAME.registerComponent('model-viewer', {
       this.oldHandX = intersectionPosition.x;
       this.oldHandY = intersectionPosition.y;
     },
-  
-    onEnterVR: function () {
-      var cameraRigEl = this.cameraRigEl;
-  
-      this.cameraRigPosition = cameraRigEl.object3D.position.clone();
-      this.cameraRigRotation = cameraRigEl.object3D.rotation.clone();
-  
-      if (!this.el.sceneEl.is('ar-mode')) {
-        cameraRigEl.object3D.position.set(0, 0, 2);
-      } else {
-        cameraRigEl.object3D.position.set(0, 0, 0);
-      }
-    },
-  
-    onExitVR: function () {
-      var cameraRigEl = this.cameraRigEl;
-  
-      cameraRigEl.object3D.position.copy(this.cameraRigPosition);
-      cameraRigEl.object3D.rotation.copy(this.cameraRigRotation);
-  
-      cameraRigEl.object3D.rotation.set(0, 0, 0);
-    },
-  
+
     onTouchMove: function (evt) {
       if (evt.touches.length === 1) { this.onSingleTouchMove(evt); }
       if (evt.touches.length === 2) { this.onPinchMove(evt); }
@@ -371,18 +339,18 @@ AFRAME.registerComponent('model-viewer', {
       var size;
       var center;
       var scale;
-      var modelEl = this.modelEl;
+      //var modelEl = this.modelEl;
       var shadowEl = this.shadowEl;
       var titleEl = this.titleEl;
       var gltfObject = modelEl.getObject3D('mesh');
   
       // Reset position and scales.
-      modelEl.object3D.position.set(0, 0, 0);
-      modelEl.object3D.scale.set(1.0, 1.0, 1.0);
+      //modelEl.object3D.position.set(0, 0, 0);
+      //modelEl.object3D.scale.set(1.0, 1.0, 1.0);
       this.cameraRigEl.object3D.position.z = 3.0;
   
       // Calculate model size.
-      modelEl.object3D.updateMatrixWorld();
+      //modelEl.object3D.updateMatrixWorld();
       box = new THREE.Box3().setFromObject(gltfObject);
       size = box.getSize(new THREE.Vector3());
   
@@ -391,10 +359,10 @@ AFRAME.registerComponent('model-viewer', {
       scale = 2.0 / size.x < scale ? 2.0 / size.x : scale;
       scale = 2.0 / size.z < scale ? 2.0 / size.z : scale;
   
-      modelEl.object3D.scale.set(scale, scale, scale);
+      //modelEl.object3D.scale.set(scale, scale, scale);
   
       // Center model at (0, 0, 0).
-      modelEl.object3D.updateMatrixWorld();
+      //modelEl.object3D.updateMatrixWorld();
       box = new THREE.Box3().setFromObject(gltfObject);
       center = box.getCenter(new THREE.Vector3());
       size = box.getSize(new THREE.Vector3());
@@ -410,9 +378,9 @@ AFRAME.registerComponent('model-viewer', {
       titleEl.object3D.position.z = -2;
       titleEl.object3D.visible = true;
   
-      modelEl.object3D.position.x = -center.x;
-      modelEl.object3D.position.y = -center.y;
-      modelEl.object3D.position.z = -center.z;
+      //modelEl.object3D.position.x = -center.x;
+      //modelEl.object3D.position.y = -center.y;
+      //modelEl.object3D.position.z = -center.z;
   
       // When in mobile landscape we want to bring the model a bit closer.
       if (AFRAME.utils.device.isLandscape()) { this.cameraRigEl.object3D.position.z -= 1; }
@@ -423,5 +391,10 @@ AFRAME.registerComponent('model-viewer', {
       this.oldClientX = evt.clientX;
       this.oldClientY = evt.clientY;
     },
+
+    randomFrom0: function (rangeFrom0) {
+      const plusOrMinus = Math.random() < 0.5 ? -1 : 1;
+      return Math.random() * rangeFrom0 * plusOrMinus;
+    }
   });
   
