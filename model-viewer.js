@@ -375,11 +375,13 @@ AFRAME.registerComponent('model-viewer', {
     },
     
     approachPlayer: function (enemyModel) {
-        var targetDirection = enemyModel.object3D.worldToLocal(this.cameraRigEl.object3D.position.clone());
-        console.log(targetDirection)
-        var distanceFromTarget = enemyModel.object3D.position.distanceTo(this.cameraRigEl.object3D.position);
-        if (distanceFromTarget > 0.001) {
-          enemyModel.object3D.translateOnAxis(targetDirection, 0.0002);
-        }
+      var worldPos = new THREE.Vector3();
+      worldPos.setFromMatrixPosition(this.cameraEl.object3D.matrixWorld)
+      var targetDirection = enemyModel.object3D.worldToLocal(worldPos.clone());
+      enemyModel.object3D.lookAt(worldPos);
+      var distanceFromTarget = enemyModel.object3D.position.distanceTo(worldPos);
+      if (distanceFromTarget > 0.001) {
+        enemyModel.object3D.translateOnAxis(targetDirection, 0.0002);
+      }
     },
   });
