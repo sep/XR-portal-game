@@ -1,8 +1,9 @@
 /* global AFRAME, THREE */
 AFRAME.registerComponent('model-viewer', {
     schema: {
-      gltfModel: {default: ''},
-      title: {default: ''}
+        gltfModel: {default: ''},
+        gltfModel2: {default: ''},
+        title: {default: ''}
     },
     init: function () {
       var el = this.el;
@@ -48,11 +49,14 @@ AFRAME.registerComponent('model-viewer', {
       this.el.sceneEl.addEventListener('exit-vr', this.onExitVR);
   
       this.modelEl.addEventListener('model-loaded', this.onModelLoaded);
+      this.modelEl2.addEventListener('model-loaded', this.onModelLoaded);
     },
   
     update: function () {
       if (!this.data.gltfModel) { return; }
       this.modelEl.setAttribute('gltf-model', this.data.gltfModel);
+      if (!this.data.gltfModel2) { return; }
+      this.modelEl2.setAttribute('gltf-model', this.data.gltfModel2);
     },
   
     initCameraRig: function () {
@@ -106,7 +110,9 @@ AFRAME.registerComponent('model-viewer', {
       // We will center the model and rotate a pivot.
       var modelPivotEl = this.modelPivotEl = document.createElement('a-entity');
       // This is our glTF model entity.
-      var modelEl = this.modelEl = document.createElement('a-entity');
+      var modelEl = this.modelEl = document.createElement('a-entity');      
+      // This is our glTF model entity.
+      var modelEl2 = this.modelEl2 = document.createElement('a-entity');
       // Shadow blurb for 2D and VR modes. Scaled to match the size of the model.
       var shadowEl = this.shadowEl = document.createElement('a-entity');
       // Real time shadow only used in AR mode.
@@ -134,6 +140,7 @@ AFRAME.registerComponent('model-viewer', {
       reticleEl.setAttribute('visible', 'false');
   
       modelEl.id = 'model';
+      modelEl2.id = 'model';
   
       laserHitPanelEl.id = 'laserHitPanel';
       laserHitPanelEl.setAttribute('position', '0 0 -10');
@@ -149,6 +156,12 @@ AFRAME.registerComponent('model-viewer', {
       modelEl.setAttribute('shadow', 'cast: true; receive: false');
   
       modelPivotEl.appendChild(modelEl);
+
+      modelEl2.setAttribute('rotation', '0 90 90');
+      modelEl2.setAttribute('animation-mixer', '');
+      modelEl2.setAttribute('shadow', 'cast: true; receive: false');
+  
+      modelPivotEl.appendChild(modelEl2);
   
       shadowEl.setAttribute('rotation', '-90 0 0');
       shadowEl.setAttribute('geometry', 'primitive: plane; width: 1.0; height: 1.0');
@@ -354,17 +367,21 @@ AFRAME.registerComponent('model-viewer', {
       var center;
       var scale;
       var modelEl = this.modelEl;
+      var modelEl2 = this.modelEl2;
       var shadowEl = this.shadowEl;
       var titleEl = this.titleEl;
       var gltfObject = modelEl.getObject3D('mesh');
   
       // Reset position and scales.
       modelEl.object3D.position.set(0, 0, 0);
-      modelEl.object3D.scale.set(1.0, 1.0, 1.0);
+      modelEl.object3D.scale.set(1.0, 1.0, 1.0);      
+      modelEl2.object3D.position.set(0, 0, 0);
+      modelEl2.object3D.scale.set(1.0, 1.0, 1.0);
       this.cameraRigEl.object3D.position.z = 3.0;
   
       // Calculate model size.
       modelEl.object3D.updateMatrixWorld();
+      modelEl2.object3D.updateMatrixWorld();
       box = new THREE.Box3().setFromObject(gltfObject);
       size = box.getSize(new THREE.Vector3());
   
@@ -374,9 +391,11 @@ AFRAME.registerComponent('model-viewer', {
       scale = 2.0 / size.z < scale ? 2.0 / size.z : scale;
   
       modelEl.object3D.scale.set(scale, scale, scale);
+      modelEl2.object3D.scale.set(scale, scale, scale);
   
       // Center model at (0, 0, 0).
       modelEl.object3D.updateMatrixWorld();
+      modelEl2.object3D.updateMatrixWorld();
       box = new THREE.Box3().setFromObject(gltfObject);
       center = box.getCenter(new THREE.Vector3());
       size = box.getSize(new THREE.Vector3());
@@ -394,7 +413,11 @@ AFRAME.registerComponent('model-viewer', {
   
       modelEl.object3D.position.x = -center.x;
       modelEl.object3D.position.y = -center.y;
-      modelEl.object3D.position.z = -center.z;
+      modelEl.object3D.position.z = -center.z;  
+
+      modelEl2.object3D.position.x = -center.x;
+      modelEl2.object3D.position.y = -center.y;
+      modelEl2.object3D.position.z = -center.z;
   
       // When in mobile landscape we want to bring the model a bit closer.
       if (AFRAME.utils.device.isLandscape()) { this.cameraRigEl.object3D.position.z -= 1; }
