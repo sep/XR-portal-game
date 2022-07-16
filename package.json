@@ -1,0 +1,48 @@
+{
+  "name": "xr-portal-game",
+  "version": "1.0.0",
+  "description": "XR Portal Game",
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf dist && tsc && cp index.html dist/index.html && cp -r lib dist/lib",
+    "preserve": "npm run build",
+    "serve": "cross-env NODE_ENV=development concurrently \"tsc --watch\" \"nodemon -q dist/index.js\"",
+    "prestart": "npm run build",
+    "start": "cross-env NODE_ENV=production node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sep/XR-portal-game.git"
+  },
+  "author": "sep",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sep/XR-portal-game/issues"
+  },
+  "homepage": "https://github.com/sep/XR-portal-game#readme",
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.0.4",
+    "concurrently": "^7.2.2",
+    "copy-webpack-plugin": "^11.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "nodemon": "^2.0.19",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "@types/body-parser": "^1.19.2",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "file-loader": "^6.2.0",
+    "helmet": "^5.1.0",
+    "rimraf": "^3.0.2",
+    "webpack": "^5.73.0"
+  }
+}
