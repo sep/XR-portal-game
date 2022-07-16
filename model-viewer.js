@@ -16,8 +16,6 @@ AFRAME.registerComponent('model-viewer', {
       el.setAttribute('webxr', {optionalFeatures: 'hit-test, local-floor'});
       el.setAttribute('raycaster', {objects: '.raycastable'});
 
-      this.onModelLoaded = this.onModelLoaded.bind(this);
-
       this.onMouseUp = this.onMouseUp.bind(this);
       this.onMouseMove = this.onMouseMove.bind(this);
       this.onMouseDown = this.onMouseDown.bind(this);
@@ -48,7 +46,6 @@ AFRAME.registerComponent('model-viewer', {
       document.addEventListener('touchend', this.onTouchEnd);
       document.addEventListener('touchmove', this.onTouchMove);
 
-      //this.modelEl.addEventListener('model-loaded', this.onModelLoaded);
       this.spawnPortal(this.el, portalSpawnPoint);
       this.spawnFloater(this.el, portalSpawnPoint);
       this.spawnFloater(this.el, portalSpawnPoint);
@@ -321,46 +318,6 @@ AFRAME.registerComponent('model-viewer', {
 
       this.oldClientX = evt.clientX;
       this.oldClientY = evt.clientY;
-    },
-
-    onModelLoaded: function () {
-      this.centerAndScaleModel();
-    },
-
-    centerAndScaleModel: function () {
-      var box;
-      var size;
-      var center;
-      var scale;
-      //var modelEl = this.modelEl;
-      var shadowEl = this.shadowEl;
-      var gltfObject = modelEl.getObject3D('mesh');
-
-      // Reset position and scales.
-      //modelEl.object3D.position.set(0, 0, 0);
-      //modelEl.object3D.scale.set(1.0, 1.0, 1.0);
-      this.cameraRigEl.object3D.position.z = 3.0;
-
-      // Calculate model size.
-      //modelEl.object3D.updateMatrixWorld();
-      box = new THREE.Box3().setFromObject(gltfObject);
-      size = box.getSize(new THREE.Vector3());
-
-      // Calculate scale factor to resize model to human scale.
-      scale = 1.6 / size.y;
-      scale = 2.0 / size.x < scale ? 2.0 / size.x : scale;
-      scale = 2.0 / size.z < scale ? 2.0 / size.z : scale;
-
-      //modelEl.object3D.scale.set(scale, scale, scale);
-
-      // Center model at (0, 0, 0).
-      //modelEl.object3D.updateMatrixWorld();
-      box = new THREE.Box3().setFromObject(gltfObject);
-      center = box.getCenter(new THREE.Vector3());
-      size = box.getSize(new THREE.Vector3());
-
-      // When in mobile landscape we want to bring the model a bit closer.
-      if (AFRAME.utils.device.isLandscape()) { this.cameraRigEl.object3D.position.z -= 1; }
     },
 
     onMouseDown: function (evt) {
