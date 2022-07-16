@@ -111,8 +111,6 @@ AFRAME.registerComponent('model-viewer', {
       var shadowEl = this.shadowEl = document.createElement('a-entity');
       // Real time shadow only used in AR mode.
       var arShadowEl = this.arShadowEl = document.createElement('a-entity');
-      // The title / legend displayed above the model.
-      var titleEl = this.titleEl = document.createElement('a-entity');
       // Reticle model used to position the model in AR mode.
       var reticleEl = this.reticleEl = document.createElement('a-entity');
       // Scene ligthing.
@@ -164,13 +162,6 @@ AFRAME.registerComponent('model-viewer', {
       arShadowEl.setAttribute('visible', 'false');
   
       modelPivotEl.appendChild(arShadowEl);
-  
-      titleEl.id = 'title';
-      titleEl.setAttribute('text', 'value: ' + this.data.title + '; width: 6');
-      titleEl.setAttribute('hide-on-enter-ar', '');
-      titleEl.setAttribute('visible', 'false');
-  
-      this.containerEl.appendChild(titleEl);
   
       lightEl.id = 'light';
       lightEl.setAttribute('position', '-2 4 2');
@@ -355,7 +346,6 @@ AFRAME.registerComponent('model-viewer', {
       var scale;
       var modelEl = this.modelEl;
       var shadowEl = this.shadowEl;
-      var titleEl = this.titleEl;
       var gltfObject = modelEl.getObject3D('mesh');
   
       // Reset position and scales.
@@ -386,11 +376,6 @@ AFRAME.registerComponent('model-viewer', {
       shadowEl.object3D.position.y = -size.y / 2;
       shadowEl.object3D.position.z = -center.z;
       shadowEl.object3D.position.x = -center.x;
-  
-      titleEl.object3D.position.x = 2.2 - center.x;
-      titleEl.object3D.position.y = size.y + 0.5;
-      titleEl.object3D.position.z = -2;
-      titleEl.object3D.visible = true;
   
       modelEl.object3D.position.x = -center.x;
       modelEl.object3D.position.y = -center.y;
