@@ -26,6 +26,9 @@ AFRAME.registerComponent('model-viewer', {
       this.onTouchEnd = this.onTouchEnd.bind(this);
 
       this.onOrientationChange = this.onOrientationChange.bind(this);
+      
+      this.moveFloaters = this.moveFloaters.bind(this);
+      this.approachPlayer = this.approachPlayer.bind(this);
 
       this.initCameraRig();
       this.initEntities();
@@ -47,11 +50,12 @@ AFRAME.registerComponent('model-viewer', {
 
       //this.modelEl.addEventListener('model-loaded', this.onModelLoaded);
       this.spawnPortal(this.el, portalSpawnPoint);
-      this.floater = this.spawnFloater(this.el, portalSpawnPoint);
-      this.floaters.push(this.floater);
-      console.log(floaters);
       this.spawnFloater(this.el, portalSpawnPoint);
       this.spawnFloater(this.el, portalSpawnPoint);
+      this.spawnFloater(this.el, portalSpawnPoint);
+      this.spawnFloater(this.el, portalSpawnPoint);
+
+      setInterval(this.moveFloaters, 20)
     },
 
     spawnFloater: function(parent, portalSpawnPoint)  {
@@ -61,17 +65,19 @@ AFRAME.registerComponent('model-viewer', {
       const x = this.randomFrom0(.5) + portalSpawnPoint.x
       const y = this.randomFrom0(.5) + portalSpawnPoint.y
       const z = portalSpawnPoint.z
-      floaterEl.setAttribute('position', AFRAME.utils.coordinates.stringify({x:x, y:y, z:z}));
+      floaterEl.object3D.position.x = x;
+      floaterEl.object3D.position.y = y;
+      floaterEl.object3D.position.z = z;
       floaterEl.setAttribute('scale', '0.05 0.05 0.05');
       floaterEl.setAttribute('animation-mixer', { timeScale: 1, clip: "Flying", repetitions: 1, loop: "once", crossFadeDuration: 0.2});
       parent.append(floaterEl)
-      return floater;
+      this.floaters.push(floaterEl)
     },
 
-    moveFloaters: function(parent, floaters) {
+    moveFloaters: function() {
       for (var i = 0; i < this.floaters.length; i++)
       {
-        this.floaters[i].distance -= 1;
+        this.approachPlayer(this.floaters[i])
       }
     },
 
@@ -203,8 +209,6 @@ AFRAME.registerComponent('model-viewer', {
       var intersectionPosition;
       var laserHitPanelEl = this.laserHitPanelEl;
       var activeHandEl = this.activeHandEl;
-
-      this.moveFloaters(parent, this.floaters);
       
       if (!this.el.sceneEl.is('vr-mode')) { return; }
       if (!activeHandEl) { return; }
@@ -368,5 +372,14 @@ AFRAME.registerComponent('model-viewer', {
     randomFrom0: function (rangeFrom0) {
       const plusOrMinus = Math.random() < 0.5 ? -1 : 1;
       return Math.random() * rangeFrom0 * plusOrMinus;
-    }
+    },
+    
+    approachPlayer: function (enemyModel) {
+        var targetDirection = enemyModel.object3D.worldToLocal(this.cameraRigEl.object3D.position.clone());
+        console.log(targetDirection)
+        var distanceFromTarget = enemyModel.object3D.position.distanceTo(this.cameraRigEl.object3D.position);
+        if (distanceFromTarget > 0.001) {
+          enemyModel.object3D.translateOnAxis(targetDirection, 0.0002);
+        }
+    },
   });
