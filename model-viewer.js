@@ -115,8 +115,6 @@ AFRAME.registerComponent('model-viewer', {
 
       // Real time shadow only used in AR mode.
       var arShadowEl = this.arShadowEl = document.createElement('a-entity');
-      // Reticle model used to position the model in AR mode.
-      var reticleEl = this.reticleEl = document.createElement('a-entity');
       // Scene ligthing.
       var lightEl = this.lightEl = document.createElement('a-entity');
       var sceneLightEl = this.sceneLightEl = document.createElement('a-entity');
@@ -129,11 +127,6 @@ AFRAME.registerComponent('model-viewer', {
       modelPivotEl.id = 'modelPivot';
 
       this.el.appendChild(sceneLightEl);
-
-      reticleEl.setAttribute('gltf-model', '#reticle');
-      reticleEl.setAttribute('scale', '0.8 0.8 0.8');
-      reticleEl.setAttribute('ar-hit-test', {targetEl: '#modelPivot'});
-      reticleEl.setAttribute('visible', 'false');
 
       //modelEl.id = 'model';
 
@@ -182,7 +175,6 @@ AFRAME.registerComponent('model-viewer', {
       this.containerEl.appendChild(modelPivotEl);
 
       this.el.appendChild(containerEl);
-      this.el.appendChild(reticleEl);
     },
 
     onOrientationChange: function () {
