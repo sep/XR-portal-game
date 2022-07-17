@@ -53,9 +53,6 @@ AFRAME.registerComponent('model-viewer', {
       this.spawnFloater(this.el, portalSpawnPoint);
 
       setInterval(this.moveFloaters, 20)
-
-      // TODO: delete this once enemies can die. New round should start once all enemies die.
-      setInterval(this.startNewRound, 10000)
     },
 
     spawnFloater: function(parent, portalSpawnPoint)  {
@@ -319,13 +316,6 @@ AFRAME.registerComponent('model-viewer', {
     startNewRound: function () {
       this.roundNumber += 1;
 
-      // TODO: Remove this code which "kills" the enemies at the end of the round.
-      // The round should end when the enemies are dead, not the other way around.
-      for (let index = this.floaters.length - 1; index >= 0; index--) {
-        this.removeFloater(this.floaters[index]);
-      }
-      // End of code that should be removed.
-
       for (let index = 0; index < this.roundNumber + 2; index++) {
         this.spawnFloater(this.el, this.portalSpawnPoint);
       }
@@ -334,6 +324,9 @@ AFRAME.registerComponent('model-viewer', {
     removeFloater: function (enemyModel) {
       enemyModel.parentNode.removeChild(enemyModel);
       this.floaters.splice(this.floaters.indexOf(enemyModel), 1)
+      if (this.floaters.length == 0) {
+        this.startNewRound();
+      }
     },
 
     randomFrom0: function (rangeFrom0) {
