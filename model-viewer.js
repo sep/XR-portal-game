@@ -102,6 +102,7 @@ AFRAME.registerComponent('model-viewer', {
 
       cameraEl.setAttribute('camera', {fov: 60});
       cameraEl.setAttribute('id', "camera");
+      cameraEl.setAttribute('raycaster', 'showLine: true; lineColor: red; lineOpacity: 0.5');
       cameraEl.setAttribute('look-controls', {
         magicWindowTrackingEnabled: false,
         mouseEnabled: false,
@@ -202,27 +203,17 @@ AFRAME.registerComponent('model-viewer', {
       var intersection;
       var intersectionPosition;
       var laserHitPanelEl = this.laserHitPanelEl;
-      var activeHandEl = this.activeHandEl;
       
-
-      
-      if (!this.el.sceneEl.is('vr-mode')) { return; }
-      if (!activeHandEl) { return; }
-      intersection = activeHandEl.components.raycaster.getIntersection(laserHitPanelEl);
-      if (!intersection) {
-        activeHandEl.setAttribute('raycaster', 'lineColor', 'white');
-        return;
+      if (!this.el.sceneEl.is('ar-mode')) { return; }
+      for (let index = 0; index < this.floaters.length; index++) {
+        const currentFloater = this.floaters[index];
+        intersection = this.cameraEl.components.raycaster.getIntersection(currentFloater);
+        console.log(intersection);
+        if (intersection) {
+          this.removeFloater(currentFloater);
+          return;
+        }
       }
-      activeHandEl.setAttribute('raycaster', 'lineColor', '#007AFF');
-      intersectionPosition = intersection.point;
-      this.oldHandX = this.oldHandX || intersectionPosition.x;
-      this.oldHandY = this.oldHandY || intersectionPosition.y;
-
-      modelPivotEl.object3D.rotation.y -= (this.oldHandX - intersectionPosition.x) / 4;
-      modelPivotEl.object3D.rotation.x += (this.oldHandY - intersectionPosition.y) / 4;
-
-      this.oldHandX = intersectionPosition.x;
-      this.oldHandY = intersectionPosition.y;
     },
 
     onTouchMove: function (evt) {
