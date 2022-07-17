@@ -68,7 +68,6 @@ AFRAME.registerComponent('main', {
       floaterEl.setAttribute('scale', '0.05 0.05 0.05');
       floaterEl.setAttribute('animation-mixer', 'clip: Spawn; loop: false;');
       floaterEl.setAttribute('sound', "src: #buzz; autoplay: true, loop: true positional: true");
-      setTimeout(function() {
       floaterEl.object3D.layers.set(5)
       setTimeout(function() { 
         floaterEl.setAttribute('animation-mixer', 'clip: Flying; loop: true;');
