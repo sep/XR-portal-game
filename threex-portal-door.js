@@ -72,10 +72,8 @@ THREEx.Portal360.prototype._finishDoor = function(doorMesh, doorMask, doorInside
 	parentThis.outsideMesh = outsideMesh
 
 	// create frameMesh for the frame of the portal
-	//var frameMesh = this._buildRectangularFrame(doorWidth/100, doorWidth, doorHeight)
-    //var frameMesh = this._buildGLTFFrame(doorMeshUrl, doorCenter);
-    parentThis.object3d.add(doorMesh)
-    parentThis.doorMesh = doorMesh
+    //parentThis.object3d.add(doorMesh)
+    //parentThis.doorMesh = doorMesh
 	
 }
 //////////////////////////////////////////////////////////////////////////////

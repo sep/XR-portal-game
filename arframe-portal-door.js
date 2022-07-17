@@ -40,10 +40,52 @@ AFRAME.registerComponent('arjs-portal-door', {
 		this._portalDoor = portalDoor
 
 		this.el.object3D.add(portalDoor.object3d)
+
+        var doorGltf = this.buildDoorGltf(meshUrl)
+        this.doorGltf = doorGltf;
+        this.el.appendChild(doorGltf)
+        parentThis = this;
+
+        var portalParticles = this.buildParticles();
+        this.el.appendChild(portalParticles)
 	},
 	tick: function(){
 		this._portalDoor.update()
-	}
+	},
+
+    buildDoorGltf: function(meshUrl)
+    {
+        const doorGltf = document.createElement('a-entity');
+        doorGltf.setAttribute('response-type', "arraybuffer");
+        doorGltf.setAttribute('gltf-model', meshUrl);
+        doorGltf.setAttribute('animation-mixer', 'clip: Idle;');
+        return doorGltf;
+    },
+
+    buildParticles: function() {
+        var particles = this.particles = document.createElement('a-entity');
+        particles.setAttribute("particle-system", 
+            { 
+                color: "#DD15FF,#6E0B7F", 
+                particleCount: "100",
+                randomise: true,
+                texture: "./assets/images/smoke.png",
+                opacity: "0.1 0",
+                dragValue: "500",
+                dragSpread: "1",
+                type: 3,
+                size: "5",
+                velocityValue: "0 -0.5 -0.35",
+                velocitySpread: "0.2 0.2 0.2",
+                accelerationValue: "0 0.05 0",
+                accelerationSpread: "0 .005 0",
+                positionSpread: "1, 2, 0.2",
+                maxAge: 1,
+                rotationAxis: "y",
+                rotationAngle: "3.14",
+            });
+        return particles;
+    }
 });
 
 
