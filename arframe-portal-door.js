@@ -3,19 +3,19 @@ AFRAME.registerComponent('arjs-portal-door', {
 	schema: {
 		url : {		// Url of the content - may be video or image
 			type: 'string',
-            default: "/assets/images/jwst_mapped_edited.jpg"
+            default: "https://sep.github.io/XR-portal-game/assets/images/jwst_mapped_edited.jpg"
 		},
 		doorMesh : {	// door gltf
 			type: 'string',
-            default: "/assets/gltf/portal.gltf"
+            default: "https://sep.github.io/XR-portal-game/assets/gltf/portal.gltf"
 		},
 		doorMask : {	// door gltf
 			type: 'string',
-            default: "/assets/gltf/portal_mask.gltf"
+            default: "https://sep.github.io/XR-portal-game/assets/gltf/portal_mask.gltf"
 		},
 		doorInsideMask : {	// door gltf
 			type: 'string',
-            default: "/assets/gltf/portal_inside_mask.gltf"
+            default: "https://sep.github.io/XR-portal-game/assets/gltf/portal_inside_mask.gltf"
 		},
 		doorWidth : {	// width of the door
 			type: 'number',
