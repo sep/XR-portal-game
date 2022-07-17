@@ -1,5 +1,5 @@
 /* global AFRAME, THREE */
-AFRAME.registerComponent('model-viewer', {
+AFRAME.registerComponent('main', {
     schema: {
       title: {default: ''}
     },
