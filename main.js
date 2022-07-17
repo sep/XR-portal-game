@@ -10,7 +10,7 @@ AFRAME.registerComponent('main', {
       const portalSpawnPoint = this.portalSpawnPoint = {x: 0, y: 0.5, z: -2}
       const portalWidth = 2
       const portalHeight = 3
-
+      var context = new AudioContext();
       el.setAttribute('renderer', {colorManagement: true});
       el.setAttribute('cursor', {rayOrigin: 'mouse', fuse: false});
       el.setAttribute('webxr', {optionalFeatures: 'hit-test, local-floor'});
@@ -24,7 +24,7 @@ AFRAME.registerComponent('main', {
       this.onTouchEnd = this.onTouchEnd.bind(this);
 
       this.onOrientationChange = this.onOrientationChange.bind(this);
-      
+
       this.startNewRound = this.startNewRound.bind(this);
       this.moveFloaters = this.moveFloaters.bind(this);
       this.approachPlayer = this.approachPlayer.bind(this);
@@ -68,7 +68,8 @@ AFRAME.registerComponent('main', {
       floaterEl.setAttribute('scale', '0.05 0.05 0.05');
       floaterEl.setAttribute('animation-mixer', 'clip: Spawn; loop: false;');
       floaterEl.setAttribute('class', 'enemy-target');
-      setTimeout(function() { 
+      floaterEl.setAttribute('sound', "src: #buzz; autoplay: true, loop: true positional: true");
+      setTimeout(function() {
         floaterEl.setAttribute('animation-mixer', 'clip: Flying; loop: true;');
       }, 2000) // spawn anim is 48 frames or 2000 ms long, animation events dont work
       parent.append(floaterEl)
@@ -84,9 +85,8 @@ AFRAME.registerComponent('main', {
     },
 
     spawnPortal: function(parent, portalSpawnPoint) {
-      var portal = document.createElement('a-portal-door');
+      const portal = document.createElement('a-portal-door');
       portal.setAttribute('position', AFRAME.utils.coordinates.stringify(portalSpawnPoint));
-      //portal.setAttribute("position", "0 0.5 -0.5");
       portal.setAttribute("scale", "1 1 1");
       portal.setAttribute("rotation", "0 0 0");
       parent.append(portal)
@@ -101,7 +101,7 @@ AFRAME.registerComponent('main', {
       cameraEl.setAttribute('camera', {fov: 60});
       cameraEl.setAttribute('id', "camera");
       cameraEl.setAttribute('raycaster', 'objects: .enemy-target; showLine: true; lineColor: red; lineOpacity: 0.5');
-      
+
       cameraEl.setAttribute('look-controls', {
         magicWindowTrackingEnabled: false,
         mouseEnabled: false,
@@ -202,7 +202,7 @@ AFRAME.registerComponent('main', {
       var intersection;
       var intersectionPosition;
       var laserHitPanelEl = this.laserHitPanelEl;
-      
+
       if (!this.el.sceneEl.is('ar-mode')) { return; }
       for (let index = 0; index < this.floaters.length; index++) {
         const currentFloater = this.floaters[index];
@@ -334,7 +334,7 @@ AFRAME.registerComponent('main', {
       const plusOrMinus = Math.random() < 0.5 ? -1 : 1;
       return Math.random() * rangeFrom0 * plusOrMinus;
     },
-    
+
     approachPlayer: function (enemyModel) {
       var worldPos = new THREE.Vector3();
       worldPos.setFromMatrixPosition(this.cameraEl.object3D.matrixWorld)
