@@ -67,7 +67,7 @@ AFRAME.registerComponent('main', {
       floaterEl.object3D.position.z = z;
       floaterEl.setAttribute('scale', '0.05 0.05 0.05');
       floaterEl.setAttribute('animation-mixer', 'clip: Spawn; loop: false;');
-      floaterEl.object3D.layers.set(5)
+      floaterEl.setAttribute('class', 'enemy-target');
       setTimeout(function() { 
         floaterEl.setAttribute('animation-mixer', 'clip: Flying; loop: true;');
       }, 2000) // spawn anim is 48 frames or 2000 ms long, animation events dont work
@@ -100,7 +100,7 @@ AFRAME.registerComponent('main', {
 
       cameraEl.setAttribute('camera', {fov: 60});
       cameraEl.setAttribute('id', "camera");
-      cameraEl.setAttribute('raycaster', 'showLine: true; lineColor: red; lineOpacity: 0.5; layers: 5');
+      cameraEl.setAttribute('raycaster', 'objects: .enemy-target; showLine: true; lineColor: red; lineOpacity: 0.5');
       
       cameraEl.setAttribute('look-controls', {
         magicWindowTrackingEnabled: false,
@@ -202,11 +202,6 @@ AFRAME.registerComponent('main', {
       var intersection;
       var intersectionPosition;
       var laserHitPanelEl = this.laserHitPanelEl;
-
-      if (this.cameraEl != undefined && this.cameraEl.components.raycaster != undefined)
-      {
-        this.cameraEl.components.raycaster.raycaster.layers = 5
-      }
       
       if (!this.el.sceneEl.is('ar-mode')) { return; }
       for (let index = 0; index < this.floaters.length; index++) {
