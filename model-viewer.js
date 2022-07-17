@@ -61,7 +61,7 @@ AFRAME.registerComponent('model-viewer', {
     spawnFloater: function(parent, portalSpawnPoint)  {
       const floaterEl = document.createElement('a-entity');
       floaterEl.setAttribute('response-type', "arraybuffer");
-      floaterEl.setAttribute('gltf-model', '/assets/gltf/floater_bug.gltf');
+      floaterEl.setAttribute('gltf-model', 'https://sep.github.io/XR-portal-game/assets/gltf/floater_bug.gltf');
       const x = this.randomFrom0(.8) + portalSpawnPoint.x
       const y = this.randomFrom0(1.2) + portalSpawnPoint.y
       const z = portalSpawnPoint.z
