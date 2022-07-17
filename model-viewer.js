@@ -7,7 +7,7 @@ AFRAME.registerComponent('model-viewer', {
       var el = this.el;
       var floaters = this.floaters = [];
       var roundNumber = this.roundNumber = 1;
-      const portalSpawnPoint = this.portalSpawnPoint = {x: 0, y: 0.5, z: -5}
+      const portalSpawnPoint = this.portalSpawnPoint = {x: 0, y: 0.5, z: -2}
       const portalWidth = 2
       const portalHeight = 3
 

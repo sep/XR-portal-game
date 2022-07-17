@@ -3,7 +3,7 @@ AFRAME.registerComponent('arjs-portal-door', {
 	schema: {
 		url : {		// Url of the content - may be video or image
 			type: 'string',
-            default: "https://cdn.aframe.io/360-image-gallery-boilerplate/img/city.jpg"
+            default: "/assets/images/jwst_mapped_edited.jpg"
 		},
 		doorMesh : {	// door gltf
 			type: 'string',
