@@ -10,7 +10,7 @@ AFRAME.registerComponent('main', {
       const portalSpawnPoint = this.portalSpawnPoint = {x: 0, y: 0.5, z: -2}
       const portalWidth = 2
       const portalHeight = 3
-
+      var context = new AudioContext();
       el.setAttribute('renderer', {colorManagement: true});
       el.setAttribute('cursor', {rayOrigin: 'mouse', fuse: false});
       el.setAttribute('webxr', {optionalFeatures: 'hit-test, local-floor'});
@@ -67,7 +67,8 @@ AFRAME.registerComponent('main', {
       floaterEl.object3D.position.z = z;
       floaterEl.setAttribute('scale', '0.05 0.05 0.05');
       floaterEl.setAttribute('animation-mixer', 'clip: Spawn; loop: false;');
-      setTimeout(function() { 
+      floaterEl.setAttribute('sound', "src: #buzz; autoplay: true, loop: true positional: true");
+      setTimeout(function() {
         floaterEl.setAttribute('animation-mixer', 'clip: Flying; loop: true;');
       }, 2000) // spawn anim is 48 frames or 2000 ms long, animation events dont work
       parent.append(floaterEl)
@@ -83,9 +84,8 @@ AFRAME.registerComponent('main', {
     },
 
     spawnPortal: function(parent, portalSpawnPoint) {
-      var portal = document.createElement('a-portal-door');
+      const portal = document.createElement('a-portal-door');
       portal.setAttribute('position', AFRAME.utils.coordinates.stringify(portalSpawnPoint));
-      //portal.setAttribute("position", "0 0.5 -0.5");
       portal.setAttribute("scale", "1 1 1");
       portal.setAttribute("rotation", "0 0 0");
       parent.append(portal)
