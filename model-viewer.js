@@ -7,7 +7,8 @@ AFRAME.registerComponent('model-viewer', {
     init: function () {
       var el = this.el;
       var floaters = this.floaters = [];
-      const portalSpawnPoint = {x: 0, y: 1, z: -5}
+      var roundNumber = this.roundNumber = 1;
+      const portalSpawnPoint = this.portalSpawnPoint = {x: 0, y: 1, z: -5}
       const portalWidth = 2
       const portalHeight = 3
 
@@ -25,6 +26,7 @@ AFRAME.registerComponent('model-viewer', {
 
       this.onOrientationChange = this.onOrientationChange.bind(this);
       
+      this.startNewRound = this.startNewRound.bind(this);
       this.moveFloaters = this.moveFloaters.bind(this);
       this.approachPlayer = this.approachPlayer.bind(this);
 
@@ -50,17 +52,19 @@ AFRAME.registerComponent('model-viewer', {
       this.spawnFloater(this.el, portalSpawnPoint);
       this.spawnFloater(this.el, portalSpawnPoint);
       this.spawnFloater(this.el, portalSpawnPoint);
-      this.spawnFloater(this.el, portalSpawnPoint);
 
       setInterval(this.moveFloaters, 20)
+
+      // TODO: delete this once enemies can die. New round should start once all enemies die.
+      setInterval(this.startNewRound, 10000)
     },
 
     spawnFloater: function(parent, portalSpawnPoint)  {
       const floaterEl = document.createElement('a-entity');
       floaterEl.setAttribute('response-type', "arraybuffer");
       floaterEl.setAttribute('gltf-model', '/assets/gltf/floater_bug.gltf');
-      const x = this.randomFrom0(.5) + portalSpawnPoint.x
-      const y = this.randomFrom0(.5) + portalSpawnPoint.y
+      const x = this.randomFrom0(.8) + portalSpawnPoint.x
+      const y = this.randomFrom0(1.2) + portalSpawnPoint.y
       const z = portalSpawnPoint.z
       floaterEl.object3D.position.x = x;
       floaterEl.object3D.position.y = y;
@@ -88,6 +92,7 @@ AFRAME.registerComponent('model-viewer', {
       portalEl.setAttribute('rotation', '0 90 90');
       parent.append(portalEl)
     },
+
     initCameraRig: function () {
       var cameraRigEl = this.cameraRigEl = document.createElement('a-entity');
       var cameraEl = this.cameraEl = document.createElement('a-entity');
@@ -144,8 +149,6 @@ AFRAME.registerComponent('model-viewer', {
 
       this.el.appendChild(sceneLightEl);
 
-      //modelEl.id = 'model';
-
       laserHitPanelEl.id = 'laserHitPanel';
       laserHitPanelEl.setAttribute('position', '0 0 -10');
       laserHitPanelEl.setAttribute('geometry', 'primitive: plane; width: 30; height: 20');
@@ -154,15 +157,6 @@ AFRAME.registerComponent('model-viewer', {
       laserHitPanelEl.classList.add('raycastable');
 
       this.containerEl.appendChild(laserHitPanelEl);
-
-      //modelEl.setAttribute('rotation', '0 0 0');
-      //modelEl.setAttribute('animation-mixer', { timeScale: 1, clip: "Flying", repetitions: 1, loop: "once", crossFadeDuration: 0.2});
-      // this.modelEl.addEventListener("action-loop", function (action, loopDelta) {
-      //   console.log("Animation finished")
-      // });
-      //modelEl.setAttribute('shadow', 'cast: true; receive: false');
-
-     // modelPivotEl.appendChild(modelEl);
 
       arShadowEl.setAttribute('rotation', '-90 0 0');
       arShadowEl.setAttribute('geometry', 'primitive: plane; width: 30.0; height: 30.0');
@@ -327,6 +321,26 @@ AFRAME.registerComponent('model-viewer', {
       if (evt.buttons) { this.leftRightButtonPressed = evt.buttons === 3; }
       this.oldClientX = evt.clientX;
       this.oldClientY = evt.clientY;
+    },
+
+    startNewRound: function () {
+      this.roundNumber += 1;
+
+      // TODO: Remove this code which "kills" the enemies at the end of the round.
+      // The round should end when the enemies are dead, not the other way around.
+      for (let index = this.floaters.length - 1; index >= 0; index--) {
+        this.removeFloater(this.floaters[index]);
+      }
+      // End of code that should be removed.
+
+      for (let index = 0; index < this.roundNumber + 2; index++) {
+        this.spawnFloater(this.el, this.portalSpawnPoint);
+      }
+    },
+
+    removeFloater: function (enemyModel) {
+      enemyModel.parentNode.removeChild(enemyModel);
+      this.floaters.splice(this.floaters.indexOf(enemyModel), 1)
     },
 
     randomFrom0: function (rangeFrom0) {
