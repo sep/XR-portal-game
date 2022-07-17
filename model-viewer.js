@@ -1,14 +1,13 @@
 /* global AFRAME, THREE */
 AFRAME.registerComponent('model-viewer', {
     schema: {
-      gltfModel: {default: ''},
       title: {default: ''}
     },
     init: function () {
       var el = this.el;
       var floaters = this.floaters = [];
       var roundNumber = this.roundNumber = 1;
-      const portalSpawnPoint = this.portalSpawnPoint = {x: 0, y: 1, z: -5}
+      const portalSpawnPoint = this.portalSpawnPoint = {x: 0, y: 0.5, z: -5}
       const portalWidth = 2
       const portalHeight = 3
 
@@ -70,7 +69,10 @@ AFRAME.registerComponent('model-viewer', {
       floaterEl.object3D.position.y = y;
       floaterEl.object3D.position.z = z;
       floaterEl.setAttribute('scale', '0.05 0.05 0.05');
-      floaterEl.setAttribute('animation-mixer', { timeScale: 1, clip: "Flying", repetitions: 1, loop: "once", crossFadeDuration: 0.2});
+      floaterEl.setAttribute('animation-mixer', 'clip: Spawn; loop: false;');
+      setTimeout(function() { 
+        floaterEl.setAttribute('animation-mixer', 'clip: Flying; loop: true;');
+      }, 2000) // spawn anim is 48 frames or 2000 ms long, animation events dont work
       parent.append(floaterEl)
       this.floaters.push(floaterEl)
     },
@@ -84,13 +86,12 @@ AFRAME.registerComponent('model-viewer', {
     },
 
     spawnPortal: function(parent, portalSpawnPoint) {
-      const portalEl = document.createElement('a-entity');
-      portalEl.setAttribute('response-type', "arraybuffer");
-      portalEl.setAttribute('gltf-model', '/assets/gltf/portal.gltf');
-      portalEl.setAttribute('position', AFRAME.utils.coordinates.stringify(portalSpawnPoint));
-      portalEl.setAttribute('scale', '0.8 0.8 0.8');
-      portalEl.setAttribute('rotation', '0 90 90');
-      parent.append(portalEl)
+      var portal = document.createElement('a-portal-door');
+      portal.setAttribute('position', AFRAME.utils.coordinates.stringify(portalSpawnPoint));
+      //portal.setAttribute("position", "0 0.5 -0.5");
+      portal.setAttribute("scale", "1 1 1");
+      portal.setAttribute("rotation", "0 0 0");
+      parent.append(portal)
     },
 
     initCameraRig: function () {
@@ -100,6 +101,7 @@ AFRAME.registerComponent('model-viewer', {
       var leftHandEl = this.leftHandEl = document.createElement('a-entity');
 
       cameraEl.setAttribute('camera', {fov: 60});
+      cameraEl.setAttribute('id', "camera");
       cameraEl.setAttribute('look-controls', {
         magicWindowTrackingEnabled: false,
         mouseEnabled: false,
